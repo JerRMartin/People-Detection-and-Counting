@@ -11,6 +11,9 @@ def get_frame(number) -> tuple[str,  cv2.typing.MatLike | None] | None:
     return None
 
 def show_frame(number):
+
+    print("[o] Showing frame number " + str(number))
+
     frame_data = get_frame(number)
     if frame_data:
         name, img = frame_data
@@ -20,6 +23,9 @@ def show_frame(number):
             cv2.destroyAllWindows()
 
 def show_all_frames():
+
+    print("[o] Press 'q' to quit. Press any other key to show the next frame.")
+
     for frame in C.FRAMES_DIR.glob('*.jpg'):
         img = cv2.imread(str(frame))
         cv2.imshow("Frame", img)
