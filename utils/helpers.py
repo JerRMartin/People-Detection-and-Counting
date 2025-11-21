@@ -39,15 +39,34 @@ def show_all_frames():
 
     for frame in C.FRAMES_DIR.glob('*.jpg'):
         img = cv2.imread(str(frame))
-
-        # Pre-Processing the Image
-        preprocessed = preprocess_frame(frame.name, img)
-        name = preprocessed[0]
-        img = preprocessed[1]
-
-        cv2.imshow(name, img)
+        cv2.imshow(img)
         key = cv2.waitKey(0)  # Wait for a key press to show the next frame
         if key == ord('q'):  # Press 'q' to exit
             break
 
     cv2.destroyAllWindows()
+
+# Preprocess all frames
+def preprocess_all_frames():
+
+    print(".")
+    print("[o] Preprocessing all frames in the frames directory...")
+
+    for frame in C.FRAMES_DIR.glob('*.jpg'):
+        img = cv2.imread(str(frame))
+
+        # Pre-Processing the Image
+        preprocess_frame(frame.name, img)
+
+    print(".")
+    print("[o] All frames were preprocessed.")
+
+    return 
+
+
+
+
+# Pre-Processing the Image
+#preprocessed = preprocess_frame(frame.name, img)
+#name = preprocessed[0]
+#img = preprocessed[1]
