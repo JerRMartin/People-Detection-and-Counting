@@ -2,7 +2,8 @@
 import cv2
 import config as C
 
-def get_frame(number) -> tuple[str,  cv2.typing.MatLike | None] | None: 
+# Retrieve a specific frame by its number
+def get_frame(number) -> tuple[str,  cv2.typing.MatLike | None] | None:
     filename = f"seq_{int(number):06d}.jpg"
     path = C.FRAMES_DIR / filename
     if path.exists():
@@ -10,6 +11,7 @@ def get_frame(number) -> tuple[str,  cv2.typing.MatLike | None] | None:
         return (filename, img)
     return None
 
+# Display a specific frame by its number
 def show_frame(number):
 
     print("[o] Showing frame number " + str(number))
@@ -18,10 +20,11 @@ def show_frame(number):
     if frame_data:
         name, img = frame_data
         cv2.imshow(name, img)
-        key = cv2.waitKey(0)  # Wait for a key press to close the frame
+        key = cv2.waitKey(0)  # Wait for a key press
         if key == ord('q'):  # Press 'q' to exit
             cv2.destroyAllWindows()
 
+# Display all frames in the frames directory
 def show_all_frames():
 
     print("[o] Press 'q' to quit. Press any other key to show the next frame.")

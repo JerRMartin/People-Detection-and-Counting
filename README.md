@@ -50,3 +50,11 @@ python -m venv .venv
 pip install -r requirements.txt
 python -m pytest -q
 ```
+
+## Project Data
+We are using the [Mall Dataset](https://personal.ie.cuhk.edu.hk/~ccloy/downloads_mall_dataset.html). 
+
+For convienence, we included **300 frames** from this dataset in the `/frames` directory within this project. 
+
+## Example Command(s)
+### TODO: Add these
