@@ -20,12 +20,7 @@ def show_frame(number):
     frame_data = get_frame(number)
     if frame_data:
         name, img = frame_data
-
-        # Pre-Processing the Image
-        preprocessed = preprocess_frame(name, img)
-        name = preprocessed[0]
-        img = preprocessed[1]
-
+        
         # Showing result
         cv2.imshow(name, img)
         key = cv2.waitKey(0)  # Wait for a key press
