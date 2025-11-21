@@ -23,15 +23,7 @@ Notes:
 pip install -r requirements.txt
 ```
 
-### 3. *OPTIONAL: Run the automated tests (pytest).*
-
-```bash
-python -m pytest -q
-```
-
-Expected output is that tests pass (exit code 0) and you see a brief pytest summary.
-
-### 4. Run the package entrypoint.
+### 3. Run the package entrypoint.
 
 ```bash
 python -m src.main
