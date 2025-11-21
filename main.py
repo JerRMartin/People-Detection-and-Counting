@@ -1,6 +1,5 @@
 # main.py
-from utils.helpers import show_all_frames, show_frame
-import cv2
+from utils.helpers import show_frame
 
 def main():
     show_frame(250)
