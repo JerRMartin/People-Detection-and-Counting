@@ -3,7 +3,7 @@ from utils.helpers import show_frame, show_all_frames
 
 
 def main():
-    show_frame(250)
+    #show_frame(250)
     show_all_frames()
     
 

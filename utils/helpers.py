@@ -1,6 +1,7 @@
 # utils/helpers.py
 import cv2
 import config as C
+from utils.processing import preprocess_frame
 
 # Retrieve a specific frame by its number
 def get_frame(number) -> tuple[str,  cv2.typing.MatLike | None] | None:
@@ -19,6 +20,13 @@ def show_frame(number):
     frame_data = get_frame(number)
     if frame_data:
         name, img = frame_data
+
+        # Pre-Processing the Image
+        preprocessed = preprocess_frame(name, img)
+        name = preprocessed[0]
+        img = preprocessed[1]
+
+        # Showing result
         cv2.imshow(name, img)
         key = cv2.waitKey(0)  # Wait for a key press
         if key == ord('q'):  # Press 'q' to exit
@@ -31,7 +39,13 @@ def show_all_frames():
 
     for frame in C.FRAMES_DIR.glob('*.jpg'):
         img = cv2.imread(str(frame))
-        cv2.imshow("Frame", img)
+
+        # Pre-Processing the Image
+        preprocessed = preprocess_frame(frame.name, img)
+        name = preprocessed[0]
+        img = preprocessed[1]
+
+        cv2.imshow(name, img)
         key = cv2.waitKey(0)  # Wait for a key press to show the next frame
         if key == ord('q'):  # Press 'q' to exit
             break
