@@ -25,8 +25,6 @@ pip install -r requirements.txt
 
 ```bash
 python -m src.main
-# OR
-python src/main.py
 ```
 
 ### Notes for Windows native (PowerShell / CMD)
