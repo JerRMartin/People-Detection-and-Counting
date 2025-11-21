@@ -4,30 +4,59 @@
 The goal of this project is to design and implement a people detection and counting system that works on low-quality images or videos (CCTV-style videos). To achive this we plan to detect humans in each frame (image), count the number of people, and evaluate performance.
 
 
-## Setup 
-Ensure Python's package installer (PIP) is installed on your machine. 
+## Running the Project
+### 1. Create a virtual environment named `.venv` (safe local name) and activate it.
 
-Open a terminal in the working directory (This is using a [WSL](https://learn.microsoft.com/en-us/windows/wsl/install) terminal)
-
-1. Create a virtual environment named `virtual_env`
-
-```
-python3 -m venv virtual_env
+```bash
+python3 -m venv .venv
+source .venv/bin/activate
 ```
 
-2. Activate the virtual environment
-```
-source virtual_env/bin/activate
-```
-> Note: You should now see your working directory prefixed by `(virtual_env)`
+Notes:
+- If `python3` isn't available, try `python`. Check the Python version with `python --version`.
 
+- For this Project it is recommended to use `3.11.*` as many dependencies require this version. 
 
-3. Install the requirements using pip
-```
+### 2. Install the project requirements.
+
+```bash
 pip install -r requirements.txt
 ```
 
-4. To run the program
+### 3. *OPTIONAL: Run the automated tests (pytest).*
+
+```bash
+python -m pytest -q
 ```
-python3 main.py
+
+Expected output is that tests pass (exit code 0) and you see a brief pytest summary.
+
+### 4. Run the package entrypoint.
+
+```bash
+python -m src.main
+# OR
+python src/main.py
+```
+
+### Notes for Windows native (PowerShell / CMD)
+
+- The above instructions assume you are running inside WSL. If you prefer to run natively on Windows (PowerShell), create and activate a venv with:
+
+PowerShell:
+
+```powershell
+python -m venv .venv
+.\.venv\Scripts\Activate.ps1
+pip install -r requirements.txt
+python -m pytest -q
+```
+
+CMD:
+
+```cmd
+python -m venv .venv
+.\.venv\Scripts\activate.bat
+pip install -r requirements.txt
+python -m pytest -q
 ```
