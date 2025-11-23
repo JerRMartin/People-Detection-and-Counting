@@ -52,5 +52,6 @@ def detect_people_in_frame(frame) -> tuple[any, int]:
 # your system counts people overall. If you incorporate temporal tracking to stabilize counts over time, 
 # briefly explain your tracking approach and how it affects the counting accuracy.
 '''
-def count_people_in_frame(detections):
+def compare_to_ground_truth(detections):
+    # look at TRUE_PEOPLE_COUNT from config.py for ground truth, and compare with detections
     pass
