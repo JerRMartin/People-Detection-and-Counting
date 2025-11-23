@@ -1,6 +1,7 @@
 # utils/processing.py
 import cv2
 from pathlib import Path
+import config as C
 
 # TODO: Task 1: Preprocessing (10%)
 '''
@@ -14,25 +15,24 @@ def preprocess_frame(name, img):
     blurred = cv2.GaussianBlur(img, (0, 0), sigmaX=2)
     sharpened = cv2.addWeighted(img, 2.0, blurred, -1.0, 0)
 
-    # Saving processed file
-    processed_dir = Path("processed_frames")
-    processed_dir.mkdir(exist_ok=True)   # Create folder if missing
+    # Contrast Enhancement
+    contrast_enhanced = cv2.convertScaleAbs(sharpened, alpha=1.2, beta=-25)
 
     processed_filename = f"processed_{name}"  # e.g., processed_seq_000123.jpg
-    processed_path = processed_dir / processed_filename
+    processed_path = C.PROCESSED_FRAMES_DIR / processed_filename
 
-    cv2.imwrite(str(processed_path), sharpened)
+    cv2.imwrite(str(processed_path), contrast_enhanced)
     print(f"[o] Processed frame saved to: {processed_path}")
 
     # Showing original VS Result
-    #cv2.imshow(f"Original: {name}", img)
-    #cv2.imshow(f"Pre-Processed: {processed_filename}", sharpened)
+    # cv2.imshow(f"Original: {name}", img)
+    # cv2.imshow(f"Pre-Processed: {processed_filename}", sharpened)
 
     #key = cv2.waitKey(0)
     #if key == ord('q'):
     #    cv2.destroyAllWindows()
 
-    return([name, sharpened])
+    return([name, contrast_enhanced])
 
 
 
