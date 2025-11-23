@@ -6,7 +6,7 @@ import cv2
 
 def main():
     #show_all_frames()
-    # preprocess_all_frames()
+    preprocess_all_frames()
 
     show_frame_by_number(250)
     show_frame_by_number(250, C.PROCESSED_FRAMES_DIR)
