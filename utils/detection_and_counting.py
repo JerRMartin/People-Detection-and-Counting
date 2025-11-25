@@ -1,12 +1,45 @@
 # utils/detection_and_counting.py
+from ultralytics import YOLO
 import cv2
-import numpy as np
-import config as C
-from utils.helpers import get_new_color
 
-# TODO: Task 2: People Detection (25%) 
-'''
-Run detection on each frame, output bounding boxes for detected people, and filter obvious false positives (e.g., by size or region of interest).
+# Load YOLO model
+model = YOLO("yolov8n.pt")
+#model = YOLO("yolov8s.pt")
+
+def detect_people_in_frame(frame):
+    """
+    todo: Task 2: People Detection (25%) 
+    Run detection on each frame, output bounding boxes for detected people, and filter obvious
+    false positives (e.g., by size or region of interest).
+    """
+
+    results = model(frame)[0]
+
+    people_count = 0
+
+    for box in results.boxes:
+        cls = int(box.cls[0])
+        if cls == 0:  # class 0 = person
+            people_count += 1
+            x1, y1, x2, y2 = map(int, box.xyxy[0])
+            cv2.rectangle(frame, (x1, y1), (x2, y2), (0, 255, 0), 2)
+            cv2.putText(frame, "person", (x1, y1 - 5),
+                        cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0,255,0), 2)
+
+    return frame, people_count
+
+def compare_to_ground_truth(detections):
+    # look at TRUE_PEOPLE_COUNT from config.py for ground truth, and compare with detections
+    '''
+    todo: Task 3: People Counting (15%)
+    # Using your detection results, estimate the number of people present in each frame. Compare these 
+    # estimated counts with the ground-truth counts for the same frames and compute per-frame errors. 
+    # Summarize your performance using appropriate metrics such as Mean Absolute Error (MAE), and discuss
+    # how well your system counts people overall. If you incorporate temporal tracking to stabilize counts
+    # over time, briefly explain your tracking approach and how it affects the counting accuracy.
+    ''' 
+    pass
+
 '''
 def detect_people_in_frame(frame) -> tuple[any, int]:
     # Initialize the HOG + SVM detector
@@ -43,15 +76,4 @@ def detect_people_in_frame(frame) -> tuple[any, int]:
         cv2.rectangle(frame, (x1, y1), (x2, y2), color, 2)
     
     return frame, len(filtered)
-
-# TODO: Task 3: People Counting (15%)
 '''
-# Using your detection results, estimate the number of people present in each frame. Compare these estimated 
-# counts with the ground-truth counts for the same frames and compute per-frame errors. Summarize
-# your performance using appropriate metrics such as Mean Absolute Error (MAE), and discuss how well 
-# your system counts people overall. If you incorporate temporal tracking to stabilize counts over time, 
-# briefly explain your tracking approach and how it affects the counting accuracy.
-'''
-def compare_to_ground_truth(detections):
-    # look at TRUE_PEOPLE_COUNT from config.py for ground truth, and compare with detections
-    pass
