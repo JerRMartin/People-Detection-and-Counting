@@ -21,6 +21,13 @@ Notes:
 pip install -r requirements.txt
 ```
 
+### 2.5 Download the Models 
+From [`ultralytics`](https://docs.ultralytics.com/models/yolo12/#detection-performance-coco-val2017) you need to download the following models and add them into the `yolo_models` folder in the project. 
+
+1. `yolov8s.pt`
+2. `yolov8n.pt`
+3. `yolo12x.pt`
+
 ### 3. Run the package entrypoint.
 
 ```bash

@@ -4,27 +4,16 @@ import config as C
 from utils.processing import preprocess_frame
 from random import randint
 
-# Retrieve a specific frame by its number and type
-def _get_frame(number, type:C.FRAME_TYPE) -> tuple[str,  cv2.typing.MatLike | None] | None:
-    prefix = "processed_seq" if type == C.PROCESSED_FRAMES_DIR else "seq"
-    filename = f"{prefix}_{int(number):06d}.jpg"
-    path = type / filename
-    if path.exists():
-        img = cv2.imread(str(path))
-        return (filename, img)
-    return None
-
 # Display a specific frame by its number and type
-def show_frame_by_number(number, type:C.FRAME_TYPE = C.RAW_FRAMES_DIR):
+def show_frame_by_number(path):
 
-    print(f"[o] Showing {type} number {number}")
+    print(f"[o] Showing {path}")
 
-    frame_data = _get_frame(number, type)
-    if frame_data:
-        name, img = frame_data
+    frame = cv2.imread(str(path))
+    if frame is not None:
         
         # Showing result
-        cv2.imshow(f'{name} ({type})', img)
+        cv2.imshow(f'{path}', frame)
         key = cv2.waitKey(0)  # Wait for a key press
         if key == ord('q'):  # Press 'q' to exit
             cv2.destroyAllWindows()
@@ -32,16 +21,15 @@ def show_frame_by_number(number, type:C.FRAME_TYPE = C.RAW_FRAMES_DIR):
 def show_frame(name, frame):
     cv2.imshow(name, frame)
     cv2.waitKey(0)
-    cv2.destroyAllWindows()
 
 # Display all frames in the specified directory
-def show_all_frames(type:C.FRAME_TYPE = C.RAW_FRAMES_DIR):
+def show_all_frames(dir: C.FRAME_DIRECTORY):
 
     print("[o] Press 'q' to quit. Press any other key to show the next frame.")
 
-    for frame in type.glob('*.jpg'):
+    for frame in dir.glob('*.jpg'):
         img = cv2.imread(str(frame))
-        cv2.imshow(img)
+        cv2.imshow(frame.name, img)
         key = cv2.waitKey(0)  # Wait for a key press to show the next frame
         if key == ord('q'):  # Press 'q' to exit
             break
@@ -54,7 +42,7 @@ def preprocess_all_frames():
     print(".")
     print("[o] Preprocessing all frames in the frames directory...")
 
-    for frame in C.RAW_FRAMES_DIR.glob('*.jpg'):
+    for frame in C.FRAME_DIRECTORY.RAW.glob('*.jpg'):
         img = cv2.imread(str(frame))
 
         # Pre-Processing the Image

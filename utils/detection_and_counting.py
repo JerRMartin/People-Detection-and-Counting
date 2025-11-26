@@ -1,30 +1,68 @@
 # utils/detection_and_counting.py
-from ultralytics import YOLO
+from utils.helpers import get_new_color
+import config as C
 import cv2
+import torch
+from torchvision.transforms import functional as F
+from PIL import Image
+import numpy as np
 
 # Load YOLO model
-model = YOLO("yolov8n.pt")
-#model = YOLO("yolov8s.pt")
+yolo_model = C.YOLO_MODEL_12X
 
-def detect_people_in_frame(frame):
+# Load Faster R-CNN model
+fasterrcnn_model = C.FASTER_RCNN_MODEL
+fasterrcnn_model.eval()
+
+def detect_people_in_frame_FasterRCNN(image_path):
+    image = Image.open(image_path).convert("RGB")
+    image_tensor = F.to_tensor(image)
+    colors = C.COLORS.copy()
+    frame = cv2.imread(str(image_path))
+
+    with torch.no_grad():
+        outputs = fasterrcnn_model([image_tensor])
+
+    boxes = outputs[0]['boxes']
+    labels = outputs[0]['labels']
+    scores = outputs[0]['scores']
+
+    people_count = 0
+
+    for box, score, label in zip(boxes, scores, labels):
+        if score > 0.8:
+            if label.item() == 1: # class 1 = person in COCO dataset https://cocodataset.org/#home
+                color, colors = get_new_color(colors)
+                x1, y1, x2, y2 = box
+                people_count += 1
+                cv2.rectangle(frame, (int(x1), int(y1)), (int(x2), int(y2)), color, 2)
+                cv2.putText(frame, f"person {people_count}", (int(x1), int(y1) - 7),
+                            cv2.FONT_HERSHEY_SIMPLEX, 0.5, color, 1)
+
+
+    return frame, people_count
+
+def detect_people_in_frame_YOLO(image_path):
     """
     todo: Task 2: People Detection (25%) 
     Run detection on each frame, output bounding boxes for detected people, and filter obvious
     false positives (e.g., by size or region of interest).
     """
-
-    results = model(frame)[0]
+    frame = cv2.imread(str(image_path))
+    results = yolo_model(frame)[0]
 
     people_count = 0
+    colors = C.COLORS.copy()
 
     for box in results.boxes:
         cls = int(box.cls[0])
-        if cls == 0:  # class 0 = person
+        if cls == 0:  # class 0 = person 
+            color, colors = get_new_color(colors)
             people_count += 1
             x1, y1, x2, y2 = map(int, box.xyxy[0])
-            cv2.rectangle(frame, (x1, y1), (x2, y2), (0, 255, 0), 2)
-            cv2.putText(frame, "person", (x1, y1 - 5),
-                        cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0,255,0), 2)
+            cv2.rectangle(frame, (x1, y1), (x2, y2), color, 2)
+            cv2.putText(frame, f"person {people_count}", (x1, y1 - 7),
+                        cv2.FONT_HERSHEY_SIMPLEX, 0.5, color, 1)
 
     return frame, people_count
 
@@ -40,8 +78,9 @@ def compare_to_ground_truth(detections):
     ''' 
     pass
 
-'''
-def detect_people_in_frame(frame) -> tuple[any, int]:
+
+def detect_people_in_frame_HOG(image_path) -> tuple[any, int]:
+    frame = cv2.imread(str(image_path))
     # Initialize the HOG + SVM detector
     hog = cv2.HOGDescriptor()
     hog.setSVMDetector(cv2.HOGDescriptor_getDefaultPeopleDetector())
@@ -76,4 +115,3 @@ def detect_people_in_frame(frame) -> tuple[any, int]:
         cv2.rectangle(frame, (x1, y1), (x2, y2), color, 2)
     
     return frame, len(filtered)
-'''

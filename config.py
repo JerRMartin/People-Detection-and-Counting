@@ -1,10 +1,18 @@
 from pathlib import Path
+from ultralytics import YOLO
+from torchvision.models.detection import fasterrcnn_resnet50_fpn
+from dataclasses import dataclass
 
-# Folders
-RAW_FRAMES_DIR = Path("frames")
-PROCESSED_FRAMES_DIR = Path("processed_frames")
+@dataclass
+class FRAME_DIRECTORY:
+    RAW: Path = Path("frames")
+    PROCESSED: Path = Path("processed_frames")
 
-FRAME_TYPE = tuple[RAW_FRAMES_DIR, PROCESSED_FRAMES_DIR]
+# ----- MODELS -----
+YOLO_MODEL_12X = YOLO("yolo_models/yolo12x.pt")
+YOLO_MODEL_8N = YOLO("yolo_models/yolov8n.pt")
+YOLO_MODEL_8S = YOLO("yolo_models/yolov8s.pt")
+FASTER_RCNN_MODEL = fasterrcnn_resnet50_fpn(pretrained=True)
 
 # ---- Colors ----
 COLOR_RED = (0, 0, 255)
