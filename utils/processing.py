@@ -10,18 +10,17 @@ you may also optionally perform video stabilization if the footage is shaky. In 
 step, explaining why it is appropriate for low-quality people-detection and counting.
 '''
 def preprocess_frame(name, img):
-
+    processed_img = img.copy()
     # Sharpening
-    blurred = cv2.GaussianBlur(img, (0, 0), sigmaX=2)
-    sharpened = cv2.addWeighted(img, 2.0, blurred, -1.0, 0)
+    processed_img = sharpen_image(processed_img)
 
     # Contrast Enhancement
-    contrast_enhanced = cv2.convertScaleAbs(sharpened, alpha=1.2, beta=-25)
+    processed_img = cv2.convertScaleAbs(processed_img, alpha=1.2, beta=-25)
 
     processed_filename = f"processed_{name}"  # e.g., processed_seq_000123.jpg
     processed_path = C.PROCESSED_FRAMES_DIR / processed_filename
 
-    cv2.imwrite(str(processed_path), contrast_enhanced)
+    cv2.imwrite(str(processed_path), processed_img)
     print(f"[o] Processed frame saved to: {processed_path}")
 
     # Showing original VS Result
@@ -32,10 +31,16 @@ def preprocess_frame(name, img):
     #if key == ord('q'):
     #    cv2.destroyAllWindows()
 
-    return([name, contrast_enhanced])
+    return([name, processed_img])
 
 
+def sharpen_image(img):
+    blurred = cv2.GaussianBlur(img, (0, 0), sigmaX=2)
+    sharpened = cv2.addWeighted(img, 2.0, blurred, -1.0, 0)
+    return sharpened
 
+def contrast_enhance(img):
+    return cv2.convertScaleAbs(img, alpha=1.2, beta=-25)
 
 
 

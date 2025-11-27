@@ -6,6 +6,10 @@ import torch
 from torchvision.transforms import functional as F
 from PIL import Image
 import numpy as np
+import csv
+
+
+# ============= DETECTION ==============
 
 # Load YOLO model
 yolo_model = C.YOLO_MODEL_12X
@@ -66,18 +70,6 @@ def detect_people_in_frame_YOLO(image_path):
 
     return frame, people_count
 
-def compare_to_ground_truth(detections):
-    # look at TRUE_PEOPLE_COUNT from config.py for ground truth, and compare with detections
-    '''
-    todo: Task 3: People Counting (15%)
-    # Using your detection results, estimate the number of people present in each frame. Compare these 
-    # estimated counts with the ground-truth counts for the same frames and compute per-frame errors. 
-    # Summarize your performance using appropriate metrics such as Mean Absolute Error (MAE), and discuss
-    # how well your system counts people overall. If you incorporate temporal tracking to stabilize counts
-    # over time, briefly explain your tracking approach and how it affects the counting accuracy.
-    ''' 
-    pass
-
 
 def detect_people_in_frame_HOG(image_path) -> tuple[any, int]:
     frame = cv2.imread(str(image_path))
@@ -115,3 +107,51 @@ def detect_people_in_frame_HOG(image_path) -> tuple[any, int]:
         cv2.rectangle(frame, (x1, y1), (x2, y2), color, 2)
     
     return frame, len(filtered)
+
+
+# ============= COUNTING ==============
+#  Task 3: People Counting (15%)
+'''
+# Using your detection results, estimate the number of people present in each frame. Compare these 
+# estimated counts with the ground-truth counts for the same frames and compute per-frame errors. 
+# Summarize your performance using appropriate metrics such as Mean Absolute Error (MAE), and discuss
+# how well your system counts people overall. If you incorporate temporal tracking to stabilize counts
+# over time, briefly explain your tracking approach and how it affects the counting accuracy.
+''' 
+
+def do_ground_truth_comparison(detection_type: C.DETECTION_TYPE):
+    with open(f'{detection_type}_output.csv', 'w', newline='') as file:
+        writer = csv.DictWriter(file, fieldnames=["frame_name", "true_count", "detected_count", "Mean_Error"])
+        writer.writeheader()  # Write header once
+
+        sum_of_ME = 0
+        
+        for image_path, true_count in C.TRUE_PEOPLE_COUNT.items():
+            match detection_type:
+                case C.DETECTION_TYPE.HOG:
+                    _, detected_count = detect_people_in_frame_HOG(image_path)
+                case C.DETECTION_TYPE.YOLO:
+                    _, detected_count = detect_people_in_frame_YOLO(image_path)
+                case C.DETECTION_TYPE.FASTER_RCNN:
+                    _, detected_count = detect_people_in_frame_FasterRCNN(image_path)
+                case _:
+                    raise ValueError("Invalid detection type")
+                
+            mean_error = abs(true_count - detected_count)
+            sum_of_ME += mean_error
+            data = {
+                "frame_name": image_path, 
+                "true_count": true_count, 
+                "detected_count": detected_count,
+                "Mean_Error": mean_error
+            }
+            writer.writerow(data)  # Append each row
+
+        writer.writerow({
+            "frame_name": "", 
+            "true_count": "", 
+            "detected_count": "Mean Absolute Error:",
+            "Mean_Error": sum_of_ME/len(C.TRUE_PEOPLE_COUNT)
+            }
+        )
+

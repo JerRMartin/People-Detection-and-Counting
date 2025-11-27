@@ -3,15 +3,18 @@ import cv2
 import config as C
 from utils.processing import preprocess_frame
 from random import randint
+from pathlib import Path
 
 # Display a specific frame by its number and type
-def show_frame_by_number(path):
+def show_frame_by_path(path):
 
     print(f"[o] Showing {path}")
 
     frame = cv2.imread(str(path))
     if frame is not None:
         
+        # Resize frames
+        frame = cv2.resize(frame, (640, 480), interpolation=cv2.INTER_AREA)
         # Showing result
         cv2.imshow(f'{path}', frame)
         key = cv2.waitKey(0)  # Wait for a key press
@@ -60,6 +63,12 @@ def get_new_color(colors: list) -> tuple[tuple[int, int, int], list]:
     color = colors[randint(0,len(colors)-1)] 
     colors.remove(color)
     return (color, colors)
+
+
+# Save frame with detections
+def save_frame_with_detections(frame, output_path: C.OUTPUT_DIRECTORY):
+    cv2.imwrite(str(output_path), frame)
+    print(f"[o] Saved detection frame to: {output_path}")
 
 
 # Pre-Processing the Image
