@@ -85,8 +85,6 @@ def detect_people_in_frame_HOG(image_path) -> tuple[any, int]:
         scale=1.05
     )
 
-    # Filter out false positives based on box size
-    MAX_W, MAX_H = 180, 340   # too big = false
 
     # Convert to x1,y1,x2,y2 format
     boxes = np.array([[x, y, x + w, y + h] for (x, y, w, h) in boxes])
@@ -94,6 +92,9 @@ def detect_people_in_frame_HOG(image_path) -> tuple[any, int]:
     colors = C.COLORS.copy()
     filtered = []
 
+    # Filter out false positives based on box size
+    MAX_W, MAX_H = 180, 340   # too big = false positive?
+    
     # Draw detections
     for (x1, y1, x2, y2) in boxes:
         w = x2 - x1
