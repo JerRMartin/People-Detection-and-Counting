@@ -39,9 +39,13 @@ def detect_people_in_frame_FasterRCNN(image_path):
                 color, colors = get_new_color(colors)
                 x1, y1, x2, y2 = box
                 people_count += 1
-                cv2.rectangle(frame, (int(x1), int(y1)), (int(x2), int(y2)), color, 2)
-                cv2.putText(frame, f"person {people_count}", (int(x1), int(y1) - 7),
-                            cv2.FONT_HERSHEY_SIMPLEX, 0.5, color, 1)
+                cv2.rectangle(frame, (int(x1), int(y1)), 
+                              (int(x2), int(y2)), 
+                              color, 2)
+                cv2.putText(frame, f"person {people_count}", 
+                            (int(x1), int(y1) - 7),
+                            cv2.FONT_HERSHEY_SIMPLEX, 
+                            0.5, color, 1)
 
 
     return frame, people_count
@@ -94,7 +98,6 @@ def detect_people_in_frame_HOG(image_path) -> tuple[any, int]:
 
     # Filter out false positives based on box size
     MAX_W, MAX_H = 180, 340   # too big = false positive?
-    
     # Draw detections
     for (x1, y1, x2, y2) in boxes:
         w = x2 - x1
