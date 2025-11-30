@@ -3,7 +3,6 @@ import cv2
 import config as C
 from utils.processing import preprocess_frame
 from random import randint
-from pathlib import Path
 
 # Display a specific frame by its number and type
 def show_frame_by_path(path):
@@ -40,21 +39,20 @@ def show_all_frames(dir: C.FRAME_DIRECTORY):
     cv2.destroyAllWindows()
 
 # Preprocess all frames
-def preprocess_all_frames():
+def preprocess_all_frames(*kwargs):
 
-    print(".")
+    print("")
     print("[o] Preprocessing all frames in the frames directory...")
 
     for frame in C.FRAME_DIRECTORY.RAW.glob('*.jpg'):
         img = cv2.imread(str(frame))
 
         # Pre-Processing the Image
-        preprocess_frame(frame.name, img)
+        preprocess_frame(frame.name, img, *kwargs)
 
-    print(".")
+    print("")
     print("[o] All frames were preprocessed.")
 
-    return 
 
 # Get a new color from the list of available colors, removing it from the list so it won't be reused until the list is exhausted
 def get_new_color(colors: list) -> tuple[tuple[int, int, int], list]:
@@ -69,9 +67,3 @@ def get_new_color(colors: list) -> tuple[tuple[int, int, int], list]:
 def save_frame_with_detections(frame, output_path: C.OUTPUT_DIRECTORY):
     cv2.imwrite(str(output_path), frame)
     print(f"[o] Saved detection frame to: {output_path}")
-
-
-# Pre-Processing the Image
-#preprocessed = preprocess_frame(frame.name, img)
-#name = preprocessed[0]
-#img = preprocessed[1]

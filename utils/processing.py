@@ -1,35 +1,32 @@
 # utils/processing.py
 import cv2
-from pathlib import Path
 import config as C
+import numpy as np
 
-# TODO: Task 1: Preprocessing (10%)
-'''
-Apply basic preprocessing operations such as resizing, denoising, and contrast enhancement to improve the visual quality of the frames; 
-you may also optionally perform video stabilization if the footage is shaky. In your report, clearly describe and justify each preprocessing
-step, explaining why it is appropriate for low-quality people-detection and counting.
-'''
-def preprocess_frame(name, img):
+def preprocess_frame(name, img, *args):
     processed_img = img.copy()
-    # Sharpening
-    processed_img = sharpen_image(processed_img)
-
-    # Contrast Enhancement
-    processed_img = cv2.convertScaleAbs(processed_img, alpha=1.2, beta=-25)
-
     processed_filename = f"processed_{name}"  # e.g., processed_seq_000123.jpg
-    processed_path = C.PROCESSED_FRAMES_DIR / processed_filename
+    print(f"[o] ==== Processing {name} ====")
+
+    for adjustment in args:
+        match adjustment:
+            case C.IMAGE_ADJUSTMENT.SHARPEN:
+                print(f"Sharpening {name}...")
+                processed_img = sharpen_image(processed_img)
+            case C.IMAGE_ADJUSTMENT.CONTRAST_ENHANCEMENT:
+                print(f"Enhancing Contrast of {name}...")
+                processed_img = contrast_enhance(processed_img)
+            case C.IMAGE_ADJUSTMENT.GAUSSIAN_BLUR:
+                print(f"Blurring {name}...")
+                processed_img = blur_image(processed_img)
+            case C.IMAGE_ADJUSTMENT.RANDOM_NOISE:
+                print(f"Adding Gaussian Noise to {name}...")
+                processed_img = add_random_noise(processed_img)
+
+    processed_path = C.FRAME_DIRECTORY.PROCESSED / processed_filename
 
     cv2.imwrite(str(processed_path), processed_img)
     print(f"[o] Processed frame saved to: {processed_path}")
-
-    # Showing original VS Result
-    # cv2.imshow(f"Original: {name}", img)
-    # cv2.imshow(f"Pre-Processed: {processed_filename}", sharpened)
-
-    #key = cv2.waitKey(0)
-    #if key == ord('q'):
-    #    cv2.destroyAllWindows()
 
     return([name, processed_img])
 
@@ -42,24 +39,12 @@ def sharpen_image(img):
 def contrast_enhance(img):
     return cv2.convertScaleAbs(img, alpha=1.2, beta=-25)
 
+def blur_image(img): 
+    blurred = cv2.GaussianBlur(img, (0, 0), sigmaX=2)
+    return blurred
 
-
-'''
-    # NONE OF THIS HELPED WITH THE IMAGES
-    #**********************************************
-    #resizing
-    
-    #=============
-    # ----- 1. Contrast Enhancement with CLAHE -----
-    #lab = cv2.cvtColor(img, cv2.COLOR_BGR2LAB)
-    #l, a, b = cv2.split(lab)
-
-    #clahe = cv2.createCLAHE(clipLimit=3.0, tileGridSize=(8, 8))
-    #cl = clahe.apply(l)
-
-    #enhanced_lab = cv2.merge((cl, a, b))
-    #enhanced = cv2.cvtColor(enhanced_lab, cv2.COLOR_LAB2BGR)
-
-    # ----- 2. Gentle Detail Enhancement -----
-    #detail = cv2.detailEnhance(img, sigma_s=20, sigma_r=0.10)
-'''
+def add_random_noise(image, intensity=25):
+    noisy_image = image.copy()
+    noise = np.random.randint(-intensity, intensity + 1, noisy_image.shape)
+    noisy_image = np.clip(noisy_image + noise, 0, 255).astype(np.uint8)
+    return noisy_image
