@@ -7,6 +7,7 @@ from torchvision.transforms import functional as F
 from PIL import Image
 import numpy as np
 import csv
+import os
 
 # ============= DETECTION ==============
 # Load YOLO model
@@ -17,6 +18,10 @@ fasterrcnn_model = C.FASTER_RCNN_MODEL
 fasterrcnn_model.eval()
 
 def detect_people_in_frame_FasterRCNN(image_path):
+
+    # Ensure output directory exists
+    os.makedirs(C.OUTPUT_DIRECTORY.BASE, exist_ok=True)
+
     image = Image.open(image_path).convert("RGB")
     image_tensor = F.to_tensor(image)
     colors = C.COLORS.copy()

@@ -6,6 +6,7 @@ import config as C
 from utils.helpers import show_frame_by_path, preprocess_all_frames, show_all_frames, save_frame_with_detections
 from utils.detection_and_counting import detect_people_in_frame_YOLO, detect_people_in_frame_FasterRCNN, detect_people_in_frame_HOG, do_ground_truth_comparison
 import cv2
+import os
 
 def preprocess_frames():
     """Preprocess all frames using the specified image adjustments."""
@@ -31,6 +32,10 @@ def show_all_frames_func():
     show_all_frames(C.FRAME_DIRECTORY.RAW)
 
 def run_ground_truth_comparison(detection_type):
+
+    # Ensure output directory exists
+    os.makedirs(C.OUTPUT_DIRECTORY.BASE, exist_ok=True)
+
     """Run ground truth comparison for a specific detection method."""
     valid_types = [C.DETECTION_TYPE.YOLO, C.DETECTION_TYPE.FASTER_RCNN, C.DETECTION_TYPE.HOG]
     
