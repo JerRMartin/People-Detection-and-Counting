@@ -8,6 +8,27 @@ class FRAME_DIRECTORY:
     RAW: Path = Path("frames")
     PROCESSED: Path = Path("processed_frames")
 
+@dataclass
+class OUTPUT_DIRECTORY:
+    BASE: Path = Path("outputs/")
+    HOG: Path = Path("outputs/hog_frames")
+    YOLO: Path = Path("outputs/yolo_frames")
+    FASTER_RCNN: Path = Path("outputs/faster_rcnn_frames")
+
+@dataclass
+class DETECTION_TYPE:
+    HOG: str = "HOG"
+    YOLO: str = "YOLO"
+    FASTER_RCNN: str = "FASTER_RCNN"
+
+@dataclass
+class IMAGE_ADJUSTMENT:
+    SHARPEN: int = 0
+    CONTRAST_ENHANCEMENT: int = 1
+    GAUSSIAN_BLUR: int = 3
+    RANDOM_NOISE: int = 4
+
+
 # ----- MODELS -----
 YOLO_MODEL_12X = YOLO("yolo_models/yolo12x.pt")
 YOLO_MODEL_8N = YOLO("yolo_models/yolov8n.pt")
@@ -38,54 +59,56 @@ COLORS = [
 # TODO: Requirements:
 # For at least 50 frames, record the true number of people in each frame. You may optionally annotate bounding boxes for a subset of frames.
 TRUE_PEOPLE_COUNT = {
-    "frames/seq_00051.jpg": 17,
-    "frames/seq_00058.jpg": 22,
-    "frames/seq_00062.jpg": 18,
-    "frames/seq_00066.jpg": 24,
-    "frames/seq_00072.jpg": 26,
-    "frames/seq_00076.jpg": 20,
-    "frames/seq_00080.jpg": 17,
-    "frames/seq_00085.jpg": 16,
-    "frames/seq_00091.jpg": 18,
-    "frames/seq_00094.jpg": 18,
-    "frames/seq_00100.jpg": 31,
-    "frames/seq_00107.jpg": 31,
-    "frames/seq_00112.jpg": 23,
-    "frames/seq_00118.jpg": 27,
-    "frames/seq_00123.jpg": 25,
-    "frames/seq_00127.jpg": 32,
-    "frames/seq_00132.jpg": 33,
-    "frames/seq_00138.jpg": 36,
-    "frames/seq_00144.jpg": 37,
-    "frames/seq_00150.jpg": 38,
-    "frames/seq_00157.jpg": 31,
-    "frames/seq_00163.jpg": 30,
-    "frames/seq_00168.jpg": 33,
-    "frames/seq_00174.jpg": 33,
-    "frames/seq_00181.jpg": 31,
-    "frames/seq_00187.jpg": 29,
-    "frames/seq_00193.jpg": 31,
-    "frames/seq_00198.jpg": 33,
-    "frames/seq_00205.jpg": 37,
-    "frames/seq_00212.jpg": 32,
-    "frames/seq_00219.jpg": 30,
-    "frames/seq_00225.jpg": 32,
-    "frames/seq_00231.jpg": 34,
-    "frames/seq_00236.jpg": 32,
-    "frames/seq_00242.jpg": 25,
-    "frames/seq_00247.jpg": 18,
-    "frames/seq_00253.jpg": 19,
-    "frames/seq_00259.jpg": 21,
-    "frames/seq_00264.jpg": 25,
-    "frames/seq_00270.jpg": 29,
-    "frames/seq_00276.jpg": 28,
-    "frames/seq_00283.jpg": 22,
-    "frames/seq_00289.jpg": 26,
-    "frames/seq_00294.jpg": 31,
-    "frames/seq_00300.jpg": 28,
-    "frames/seq_00307.jpg": 23,
-    "frames/seq_00314.jpg": 16,
-    "frames/seq_00320.jpg": 13,
-    "frames/seq_00333.jpg": 19,
-    "frames/seq_00347.jpg": 27
+    "seq_000051.jpg": 17,
+    "seq_000058.jpg": 22,
+    "seq_000062.jpg": 18,
+    "seq_000066.jpg": 24,
+    "seq_000072.jpg": 26,
+    "seq_000076.jpg": 20,
+    "seq_000080.jpg": 17,
+    "seq_000085.jpg": 16,
+    "seq_000091.jpg": 18,
+    "seq_000094.jpg": 18,
+    "seq_000100.jpg": 31,
+    "seq_000107.jpg": 31,
+    "seq_000112.jpg": 23,
+    "seq_000118.jpg": 27,
+    "seq_000123.jpg": 25,
+    "seq_000127.jpg": 32,
+    "seq_000132.jpg": 29,
+    "seq_000138.jpg": 26,
+    "seq_000144.jpg": 26,
+    "seq_000150.jpg": 24,
+    "seq_000157.jpg": 24,
+    "seq_000163.jpg": 26,
+    "seq_000168.jpg": 23,
+    "seq_000174.jpg": 18,
+    "seq_000181.jpg": 20,
+    "seq_000187.jpg": 25,
+    "seq_000193.jpg": 22,
+    "seq_000198.jpg": 24,
+    "seq_000205.jpg": 23,
+    "seq_000212.jpg": 21,
+    "seq_000219.jpg": 24,
+    "seq_000225.jpg": 21,
+    "seq_000231.jpg": 20,
+    "seq_000236.jpg": 28,
+    "seq_000242.jpg": 25,
+    "seq_000247.jpg": 18,
+    "seq_000253.jpg": 19,
+    "seq_000259.jpg": 21,
+    "seq_000264.jpg": 25,
+    "seq_000270.jpg": 29,
+    "seq_000276.jpg": 28,
+    "seq_000283.jpg": 22,
+    "seq_000289.jpg": 26,
+    "seq_000294.jpg": 31,
+    "seq_000300.jpg": 28,
+    "seq_000307.jpg": 23,
+    "seq_000314.jpg": 16,
+    "seq_000320.jpg": 13,
+    "seq_000333.jpg": 19,
+    "seq_000347.jpg": 27
 }
+
+DETECTION_PRECISION_SUBSET = [58, 72, 80, 100, 112, 118, 138, 157, 168, 174, 193, 212, 231, 236, 247, 264, 283, 300, 320, 347]

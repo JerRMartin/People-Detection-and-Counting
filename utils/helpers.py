@@ -5,13 +5,15 @@ from utils.processing import preprocess_frame
 from random import randint
 
 # Display a specific frame by its number and type
-def show_frame_by_number(path):
+def show_frame_by_path(path):
 
     print(f"[o] Showing {path}")
 
     frame = cv2.imread(str(path))
     if frame is not None:
         
+        # Resize frames
+        frame = cv2.resize(frame, (640, 480), interpolation=cv2.INTER_AREA)
         # Showing result
         cv2.imshow(f'{path}', frame)
         key = cv2.waitKey(0)  # Wait for a key press
@@ -37,21 +39,20 @@ def show_all_frames(dir: C.FRAME_DIRECTORY):
     cv2.destroyAllWindows()
 
 # Preprocess all frames
-def preprocess_all_frames():
+def preprocess_all_frames(*kwargs):
 
-    print(".")
+    print("")
     print("[o] Preprocessing all frames in the frames directory...")
 
     for frame in C.FRAME_DIRECTORY.RAW.glob('*.jpg'):
         img = cv2.imread(str(frame))
 
         # Pre-Processing the Image
-        preprocess_frame(frame.name, img)
+        preprocess_frame(frame.name, img, *kwargs)
 
-    print(".")
+    print("")
     print("[o] All frames were preprocessed.")
 
-    return 
 
 # Get a new color from the list of available colors, removing it from the list so it won't be reused until the list is exhausted
 def get_new_color(colors: list) -> tuple[tuple[int, int, int], list]:
@@ -62,7 +63,7 @@ def get_new_color(colors: list) -> tuple[tuple[int, int, int], list]:
     return (color, colors)
 
 
-# Pre-Processing the Image
-#preprocessed = preprocess_frame(frame.name, img)
-#name = preprocessed[0]
-#img = preprocessed[1]
+# Save frame with detections
+def save_frame_with_detections(frame, output_path: C.OUTPUT_DIRECTORY):
+    cv2.imwrite(str(output_path), frame)
+    print(f"[o] Saved detection frame to: {output_path}")

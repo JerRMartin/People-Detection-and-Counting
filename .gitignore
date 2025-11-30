@@ -5,6 +5,10 @@ __pycache__/
 .venv
 
 /processed_frames
+/outputs/*.csv
+/outputs/faster_rcnn_frames
+/outputs/hog_frames
+/outputs/yolo_frames
 
 # YOLO models
 yolo12x.pt
